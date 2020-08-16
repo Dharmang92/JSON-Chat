@@ -31,10 +31,10 @@ if (isset($_POST["message"])) {
     <form action="index.php" method="POST">
         <input type="text" name="message" size="40" class="rounded mx-4 my-1 p-2 shadow focus:shadow-outline border" />
         <input type="submit" value="Chat" class="p-2 bg-blue-400 mr-2 rounded hover:bg-blue-500 cursor-pointer" />
-        <input type="submit" value="Reset" class="p-2 bg-red-200 rounded hover:bg-red-400 cursor-pointer" />
+        <input type="submit" name="reset" value="Reset" class="p-2 bg-red-200 rounded hover:bg-red-400 cursor-pointer" />
     </form>
     <div id="chatcontent">
-        <img src="https://anatomised.com/wp-content/uploads/2016/05/spinner-test4.gif" alt="spinner.gif" class="w-24 m-8 hidden" />
+        <img src="https://anatomised.com/wp-content/uploads/2016/05/spinner-test4.gif" alt="spinner.gif" class="w-24 m-8" />
     </div>
 </body>
 <script>
@@ -50,12 +50,11 @@ if (isset($_POST["message"])) {
                 for (let i = 0; i < data.length; i++) {
                     const msg = data[i];
                     $("#chatcontent").append(`
-                        <p>Message: ${msg[0]} Date: ${msg[1]}</p>
+                        <p class="mx-4 my-2 "><b>${msg[0]}</b> <span class="text-xs">${msg[1]}</span></p>
                     `);
                 }
             }
         });
-
         setTimeout(updateMsg, 4000);
     }
 
