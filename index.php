@@ -1,5 +1,19 @@
 <?php
+session_start();
 
+if (isset($_POST["reset"])) {
+    $_SESSION["chats"] = array();
+    header("Location: index.php");
+    return;
+}
+if (isset($_POST["message"])) {
+    if (!isset($_SESSION["chats"])) {
+        $_SESSION["chats"] = array();
+    }
+    $_SESSION["chats"][] = array($_POST["message"], date(DATE_RFC2822));
+    header("Location: index.php");
+    return;
+}
 
 ?>
 
@@ -12,19 +26,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.6.2/tailwind.min.css">
 </head>
 
-<body>
+<body class="bg-gray-100">
     <div class="title text-4xl mx-6 my-2">JSON Chat</div>
     <form action="index.php" method="POST">
-        <input type="text" name="message" size="40" class="rounded mx-4 my-1 p-2 shadow border bg-gray-100" />
+        <input type="text" name="message" size="40" class="rounded mx-4 my-1 p-2 shadow focus:shadow-outline border" />
         <input type="submit" value="Chat" class="p-2 bg-blue-400 mr-2 rounded hover:bg-blue-500 cursor-pointer" />
         <input type="submit" value="Reset" class="p-2 bg-red-200 rounded hover:bg-red-400 cursor-pointer" />
     </form>
-    <div class="chatcontent">
-        <img src="https://anatomised.com/wp-content/uploads/2016/05/spinner-test4.gif" alt="spinner.gif" class="w-24 m-8" />
+    <div id="chatcontent">
+        <img src="https://anatomised.com/wp-content/uploads/2016/05/spinner-test4.gif" alt="spinner.gif" class="w-24 m-8 hidden" />
     </div>
 </body>
 <script>
-    // $(document).ready();
+    function updateMsg() {
+        console.log("Requesting JSON");
+        $.ajax({
+            url: "chatlist.php",
+            cache: false,
+            success: function(data) {
+                console.log("JSON Recieved");
+                $("#chatcontent").empty();
+                console.log(data);
+                for (let i = 0; i < data.length; i++) {
+                    const msg = data[i];
+                    $("#chatcontent").append(`
+                        <p>Message: ${msg[0]} Date: ${msg[1]}</p>
+                    `);
+                }
+            }
+        });
+
+        setTimeout(updateMsg, 4000);
+    }
+
+    console.log("Startup Complete");
+    updateMsg();
 </script>
 
 </html>
